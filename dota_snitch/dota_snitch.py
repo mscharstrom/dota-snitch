@@ -57,11 +57,15 @@ def get_friends():
 
         if "gameid" in friends_check["response"]["players"][0]:
             if friends_check["response"]["players"][0]["gameid"] == "570":
-                print(friends_check["response"]["players"][0]["personaname"] + " - " + friends_check["response"]["players"][0]["gameid"])
+                print(friends_check["response"]["players"][0]["personaname"] +
+                      " - " + friends_check["response"]
+                      ["players"][0]["gameid"])
             elif friends_check["response"]["players"][0]["gameid"] != "570":
-                print(friends_check["response"]["players"][0]["personaname"] + " - " + "Playing other game")
+                print(friends_check["response"]["players"][0]["personaname"] +
+                      " - " + "Playing other game")
             elif friends_check["response"]["players"][0]["personastate"] == 1:
-                print(friends_check["response"]["players"][0]["personaname"] + " - Online")
+                print(friends_check["response"]["players"][0]["personaname"] +
+                      " - Online")
 
 
 if __name__ == '__main__':
