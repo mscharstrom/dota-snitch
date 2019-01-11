@@ -6,56 +6,51 @@ myID = "" # Add you Steam ID (in numbers).
 
 def main():
     req = requests.get(f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={key}&steamids={myID}')
-    jsonResponse = json.loads(req.content)
+    json_response = json.loads(req.content)
 
-    personanameDraft = jsonResponse["response"]["players"][0]["personaname"]
-    personastateDraft = jsonResponse["response"]["players"][0]["personastate"]
+    personaname_draft = json_response["response"]["players"][0]["personaname"]
+    personastate_draft = json_response["response"]["players"][0]["personastate"]
 
     print()
-    print("name: " + personanameDraft)
-    print("state (online/offline etc): " + str(personastateDraft))
+    print("name: " + personaname_draft)
+    print("state (online/offline etc): " + str(personastate_draft))
 
 
-    if "gameid" not in jsonResponse["response"]["players"][0]:
+    if "gameid" not in json_response["response"]["players"][0]:
         print("In game: None")
     else:
-        personaGame = jsonResponse["response"]["players"][0]["gameid"]
-        print("In game: " + personaGame)
+        persona_game = json_response["response"]["players"][0]["gameid"]
+        print("In game: " + persona_game)
 
     get_friends()
 
 def get_friends():
     req = requests.get(f'http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key={key}&steamid={myID}&relationship=friend')
-    friendsContent = json.loads(req.content)
+    friends_content = json.loads(req.content)
 
     print()
     print("Friends by SteamID:")
 
     # Save friends steam ID to an set array.
-    friendArr = set()
-    for friends in friendsContent["friendslist"]["friends"]:
-        friendArr.add(friends["steamid"])
+    friend_arr = set()
+    for friends in friends_content["friendslist"]["friends"]:
+        friend_arr.add(friends["steamid"])
 
     # Loop through friends and check their status
-    for friends in friendArr:
-        reqCheck = requests.get(f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={key}&steamids={friends}')
-        friendsCheck = json.loads(reqCheck.content)
+    for friends in friend_arr:
+        req_check = requests.get(f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={key}&steamids={friends}')
+        friends_check = json.loads(req_check.content)
 
         # Check if friend is online/in game 570 or online in game
-        if "gameid" in friendsCheck["response"]["players"][0]:
-           if friendsCheck["response"]["players"][0]["gameid"] == "570":
-               print(friendsCheck["response"]["players"][0]["personaname"] + " - " + friendsCheck["response"]["players"][0]["gameid"])
+        if "gameid" in friends_check["response"]["players"][0]:
+           if friends_check["response"]["players"][0]["gameid"] == "570":
+               print(friends_check["response"]["players"][0]["personaname"] + " - " + friends_check["response"]["players"][0]["gameid"])
            else:
-               print(friendsCheck["response"]["players"][0]["personaname"] + " - " + "Playing other game")
-        elif friendsCheck["response"]["players"][0]["personastate"] == 1:
-            print(friendsCheck["response"]["players"][0]["personaname"] + " - Online")
+               print(friends_check["response"]["players"][0]["personaname"] + " - " + "Playing other game")
+        elif friends_check["response"]["players"][0]["personastate"] == 1:
+            print(friends_check["response"]["players"][0]["personaname"] + " - Online")
 
 
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
