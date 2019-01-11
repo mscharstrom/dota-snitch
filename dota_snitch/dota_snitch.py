@@ -1,8 +1,8 @@
 import json
 import requests
 
-STEAMAPI_KEY = ""  # Add your Steam API key
-MY_ID = ""  # Add you Steam ID (in numbers).
+STEAMAPI_KEY = "E175652E2DA8611CBCB169717B554130"  # Add your Steam API key
+MY_ID = "76561198275301685"  # Add you Steam ID (in numbers).
 
 def main():
     req = requests.get(f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={STEAMAPI_KEY}&steamids={MY_ID}')
@@ -26,29 +26,30 @@ def main():
 
 def get_friends():
     req = requests.get(f'http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?steamapi_key={STEAMAPI_KEY}&steamid={MY_ID}&relationship=friend')
-    friends_content = json.loads(req.content)
+    friends_response = json.loads(req.content)
 
     print()
     print("Friends by SteamID:")
 
     # Save friends steam ID to an set array.
     friend_arr = set()
-    for friends in friends_content["friendslist"]["friends"]:
+    for friends in friends_response["friendslist"]["friends"]:
         friend_arr.add(friends["steamid"])
 
     # Loop through friends and check their status
-    for friends in friend_arr:
-        req_check = requests.get(f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={STEAMAPI_KEY}&steamids={friends}')
+    for friend_id in friend_arr:
+        req_check = requests.get(f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={STEAMAPI_KEY}&steamids={friend_id}')
         friends_check = json.loads(req_check.content)
 
-        # Check if friend is online/in game 570 or online in game
         if "gameid" in friends_check["response"]["players"][0]:
-           if friends_check["response"]["players"][0]["gameid"] == "570":
-               print(friends_check["response"]["players"][0]["personaname"] + " - " + friends_check["response"]["players"][0]["gameid"])
-           else:
-               print(friends_check["response"]["players"][0]["personaname"] + " - " + "Playing other game")
-        elif friends_check["response"]["players"][0]["personastate"] == 1:
-            print(friends_check["response"]["players"][0]["personaname"] + " - Online")
+            if friends_check["response"]["players"][0]["gameid"] == "570":
+                print(friends_check["response"]["players"][0]["personaname"] + " - " + friends_check["response"]["players"][0]["gameid"])
+            elif friends_check["response"]["players"][0]["gameid"] != "570":
+                print(friends_check["response"]["players"][0]["personaname"] + " - " + "Playing other game")
+            elif friends_check["response"]["players"][0]["personastate"] == 1:
+                print(friends_check["response"]["players"][0]["personaname"] + " - Online")
+        else:
+            print("No one Online")
 
 if __name__ == '__main__':
     main()
