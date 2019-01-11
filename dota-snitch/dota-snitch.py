@@ -4,7 +4,7 @@ import requests
 steamapi_key = ""  # Add your Steam API key
 my_id = ""  # Add you Steam ID (in numbers).
 
- def main():
+def main():
     req = requests.get(f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={steamapi_key}&steamids={my_id}')
     json_response = json.loads(req.content)
 
