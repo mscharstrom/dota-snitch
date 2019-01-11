@@ -1,10 +1,20 @@
+#!/usr/bin/env python3
+
+""" This app will be using the Steam API
+to light a physical LED-Strip when X of Y
+friends are in a specific game. """
+
 import json
 import requests
 
-STEAMAPI_KEY = "E175652E2DA8611CBCB169717B554130"  # Add your Steam API key
-MY_ID = "76561198275301685"  # Add you Steam ID (in numbers).
+STEAMAPI_KEY = ""  # Add your Steam API key
+MY_ID = ""  # Add you Steam ID (in numbers).
 
 def main():
+
+    """ Test function to see my own status.
+    This will be removed on first realease """
+
     req = requests.get(f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={STEAMAPI_KEY}&steamids={MY_ID}')
     json_response = json.loads(req.content)
 
@@ -22,10 +32,13 @@ def main():
         persona_game = json_response["response"]["players"][0]["gameid"]
         print("In game: " + persona_game)
 
-    get_friends()
-
 def get_friends():
-    req = requests.get(f'http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?steamapi_key={STEAMAPI_KEY}&steamid={MY_ID}&relationship=friend')
+
+    """ This will be the main function.
+    From this data we will be starting
+    the LED-Strip and make it light up """
+
+    req = requests.get(f'http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key={STEAMAPI_KEY}&steamid={MY_ID}&relationship=friend')
     friends_response = json.loads(req.content)
 
     print()
@@ -37,8 +50,8 @@ def get_friends():
         friend_arr.add(friends["steamid"])
 
     # Loop through friends and check their status
-    for friend_id in friend_arr:
-        req_check = requests.get(f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={STEAMAPI_KEY}&steamids={friend_id}')
+    for friends in friend_arr:
+        req_check = requests.get(f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={STEAMAPI_KEY}&steamids={friends}')
         friends_check = json.loads(req_check.content)
 
         if "gameid" in friends_check["response"]["players"][0]:
@@ -48,8 +61,7 @@ def get_friends():
                 print(friends_check["response"]["players"][0]["personaname"] + " - " + "Playing other game")
             elif friends_check["response"]["players"][0]["personastate"] == 1:
                 print(friends_check["response"]["players"][0]["personaname"] + " - Online")
-        else:
-            print("No one Online")
 
 if __name__ == '__main__':
     main()
+    get_friends()
