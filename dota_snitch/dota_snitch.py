@@ -10,6 +10,7 @@ import requests
 STEAMAPI_KEY = ""  # Add your Steam API key
 MY_ID = ""  # Add you Steam ID (in numbers).
 
+
 def main():
 
     """ Test function to see my own status.
@@ -25,12 +26,12 @@ def main():
     print("name: " + personaname_draft)
     print("state (online/offline etc): " + str(personastate_draft))
 
-
     if "gameid" not in json_response["response"]["players"][0]:
         print("In game: None")
     else:
         persona_game = json_response["response"]["players"][0]["gameid"]
         print("In game: " + persona_game)
+
 
 def get_friends():
 
@@ -61,6 +62,7 @@ def get_friends():
                 print(friends_check["response"]["players"][0]["personaname"] + " - " + "Playing other game")
             elif friends_check["response"]["players"][0]["personastate"] == 1:
                 print(friends_check["response"]["players"][0]["personaname"] + " - Online")
+
 
 if __name__ == '__main__':
     main()
