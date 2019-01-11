@@ -1,11 +1,11 @@
 import json
 import requests
 
-key = "" # Add your Steam API key
-myID = "" # Add you Steam ID (in numbers).
+steamapi_key = "" # Add your Steam API key
+my_id = "" # Add you Steam ID (in numbers).
 
 def main():
-    req = requests.get(f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={key}&steamids={myID}')
+    req = requests.get(f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={steamapi_key}&steamids={my_id}')
     json_response = json.loads(req.content)
 
     personaname_draft = json_response["response"]["players"][0]["personaname"]
@@ -25,7 +25,7 @@ def main():
     get_friends()
 
 def get_friends():
-    req = requests.get(f'http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key={key}&steamid={myID}&relationship=friend')
+    req = requests.get(f'http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?steamapi_key={steamapi_key}&steamid={my_id}&relationship=friend')
     friends_content = json.loads(req.content)
 
     print()
@@ -38,7 +38,7 @@ def get_friends():
 
     # Loop through friends and check their status
     for friends in friend_arr:
-        req_check = requests.get(f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={key}&steamids={friends}')
+        req_check = requests.get(f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={steamapi_key}&steamids={friends}')
         friends_check = json.loads(req_check.content)
 
         # Check if friend is online/in game 570 or online in game
