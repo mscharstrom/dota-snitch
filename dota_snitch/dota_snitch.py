@@ -63,10 +63,9 @@ def get_friends():
             elif friends_check["response"]["players"][0]["gameid"] != "570":
                 print(friends_check["response"]["players"][0]["personaname"] +
                       " - " + "Playing other game")
-            elif friends_check["response"]["players"][0]["personastate"] == 1:
-                print(friends_check["response"]["players"][0]["personaname"] +
-                      " - Online")
-
+        elif friends_check["response"]["players"][0]["personastate"] == 1:
+            print(friends_check["response"]["players"][0]["personaname"] +
+                  " - Online")
 
 if __name__ == '__main__':
     main()
