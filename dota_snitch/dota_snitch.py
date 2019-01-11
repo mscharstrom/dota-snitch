@@ -19,18 +19,18 @@ def main():
     req = requests.get(f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={STEAMAPI_KEY}&steamids={MY_ID}')
     json_response = json.loads(req.content)
 
-    personaname_draft = json_response["response"]["players"][0]["personaname"]
-    personastate_draft = json_response["response"]["players"][0]["personastate"]
+    personaname = json_response["response"]["players"][0]["personaname"]
+    personastate = json_response["response"]["players"][0]["personastate"]
 
     print()
-    print("name: " + personaname_draft)
-    print("state (online/offline etc): " + str(personastate_draft))
+    print("name: " + personaname)
+    print("state (online/offline etc): " + str(personastate))
 
     if "gameid" not in json_response["response"]["players"][0]:
         print("In game: None")
     else:
-        persona_game = json_response["response"]["players"][0]["gameid"]
-        print("In game: " + persona_game)
+        persona_gameid = json_response["response"]["players"][0]["gameid"]
+        print("In game: " + persona_gameid)
 
 
 def get_friends():
