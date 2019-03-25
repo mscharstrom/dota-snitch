@@ -12,8 +12,9 @@ import setup
 def get_friends():
 
     """ This will be the main function.
-    From this data we will be starting
-    the LED-Strip and make it light up """
+    From this data we will check how many
+    friends that are in game and we'll
+    decide if we should light the light """
 
     req = requests.get(f'http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key={setup.STEAMAPI_KEY}&steamid={setup.MY_ID}&relationship=friend')
     friends_response = json.loads(req.content)
@@ -39,9 +40,42 @@ def get_friends():
         elif friends_check["response"]["players"][0]["personastate"] == 1:
             online_arr.add(friends_check["response"]["players"][0]["personaname"])
 
-    print(len(dota_arr))
-    print(online_arr)
+    print(("In Dota: ") + str(len(dota_arr)))
+    print("Online: " + str(len(online_arr)))
 
+    if (len(online_arr)) >= 2:
+        get_light()
+    elif (len(online_arr)) < 2:
+        get_light_off()
+
+def get_light():
+    """This function lights the Hue
+    up with PUT json request"""
+
+    hue_url = 'http://{setup.HUE_IP}/api/{setup.HUE_ID}/lights/{setup.HUE_LIGHT}/state'
+
+    data = {
+            "on": "true",
+            }
+    headers = {"Content-Type": "application/json"}
+    hue_response = requests.put(hue_url, data=json.dumps(data), headers=headers)
+
+    print(hue_response.text)
+
+
+def get_light_off():
+    """This function lights the Hue
+    up with PUT json request"""
+
+    hue_url = 'http://{setup.HUE_IP}/api/{setup.HUE_ID}/lights/{setup.HUE_LIGHT}/state'
+
+    data = {
+            "on": "false",
+            }
+    headers = {"Content-Type": "application/json"}
+    hue_response = requests.put(hue_url, data=json.dumps(data), headers=headers)
+
+    print(hue_response.text)
 
 if __name__ == '__main__':
     get_friends()
