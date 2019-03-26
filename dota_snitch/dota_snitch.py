@@ -40,42 +40,50 @@ def get_friends():
         elif friends_check["response"]["players"][0]["personastate"] == 1:
             online_arr.add(friends_check["response"]["players"][0]["personaname"])
 
-    print(("In Dota: ") + str(len(dota_arr)))
-    print("Online: " + str(len(online_arr)))
+    print(("In Dota 2: ") + str(len(dota_arr)))
+    print("Online/Other game: " + str(len(online_arr)))
 
-    if (len(online_arr)) >= 2:
+    if (len(dota_arr)) >= 2:
         get_light()
-    elif (len(online_arr)) < 2:
+    elif (len(dota_arr)) < 2:
+        get_specific_online()
+
+def get_specific_online():
+
+    req = requests.get(f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={setup.STEAMAPI_KEY}&steamids={setup.MY_ID}')
+    json_response = json.loads(req.content)
+
+    if "gameid" not in json_response["response"]["players"][0]:
+        print("Not in game - lights off")
         get_light_off()
+    elif json_response["response"]["players"][0]["gameid"] == "570":
+        print("In Dota - lights on")
+        get_light()
 
 def get_light():
     """This function lights the Hue
     up with PUT json request"""
 
-    hue_url = 'http://{setup.HUE_IP}/api/{setup.HUE_ID}/lights/{setup.HUE_LIGHT}/state'
+    headers = {
+    'Content-Type': 'application/json',
+    }
 
-    data = {
-            "on": "true",
-            }
-    headers = {"Content-Type": "application/json"}
-    hue_response = requests.put(hue_url, data=json.dumps(data), headers=headers)
+    data = '{"on":true}'
 
-    print(hue_response.text)
-
+    response = requests.put(f'http://{setup.HUE_IP}/api/{setup.HUE_ID}/lights/{setup.HUE_LIGHT}/state', headers=headers, data=data)
 
 def get_light_off():
     """This function lights the Hue
     up with PUT json request"""
 
-    hue_url = 'http://{setup.HUE_IP}/api/{setup.HUE_ID}/lights/{setup.HUE_LIGHT}/state'
+    headers = {
+    'Content-Type': 'application/json',
+    }
 
-    data = {
-            "on": "false",
-            }
-    headers = {"Content-Type": "application/json"}
-    hue_response = requests.put(hue_url, data=json.dumps(data), headers=headers)
+    data = '{"on":false}'
 
-    print(hue_response.text)
+    response = requests.put(f'http://{setup.HUE_IP}/api/{setup.HUE_ID}/lights/{setup.HUE_LIGHT}/state', headers=headers, data=data)
+
 
 if __name__ == '__main__':
     get_friends()
