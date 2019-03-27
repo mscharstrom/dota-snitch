@@ -49,7 +49,7 @@ def get_friends():
         get_specific_online()
 
 def get_specific_online():
-    
+
     """If you are online and
     in dota, this function will
     light up the Hue. If not it will
