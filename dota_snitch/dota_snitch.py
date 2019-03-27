@@ -48,6 +48,7 @@ def get_friends():
     elif (len(dota_arr)) < 2:
         get_specific_online()
 
+
 def get_specific_online():
 
     """If you are online and
@@ -63,29 +64,38 @@ def get_specific_online():
     elif json_response["response"]["players"][0]["gameid"] == "570":
         get_light()
 
+
 def get_light():
+
     """This function lights the Hue
     up with PUT json request"""
 
     headers = {
-    'Content-Type': 'application/json',
+        'Content-Type': 'application/json',
     }
 
     data = '{"on":true}'
 
     response = requests.put(f'http://{setup.HUE_IP}/api/{setup.HUE_ID}/lights/{setup.HUE_LIGHT}/state', headers=headers, data=data)
 
+    print(response.text)
+
+
 def get_light_off():
+
     """This function turns off
     the Hue with a json PUT request"""
 
     headers = {
-    'Content-Type': 'application/json',
+        'Content-Type': 'application/json',
     }
 
     data = '{"on":false}'
 
     response = requests.put(f'http://{setup.HUE_IP}/api/{setup.HUE_ID}/lights/{setup.HUE_LIGHT}/state', headers=headers, data=data)
+
+    print(response.text)
+
 
 if __name__ == '__main__':
     get_friends()
